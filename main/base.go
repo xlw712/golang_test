@@ -95,10 +95,59 @@ func listExample() {
 		fmt.Printf("list value is :%s \n", i.Value)
 	}
 }
-func main() {
-	fmt.Println(nil==nil)
+
+/**
+ * 流程控制实例
+ */
+func processExample() {
+	var a, b, max int = 1, 2, 0
+	// if表达式
+	if a > b {
+		max = a
+	} else {
+		max = b
+	}
+	if _, error := strconv.Atoi("9207d12"); error != nil {
+		fmt.Printf("字符串强制转换时出错%s\n", error)
+	}
+	fmt.Printf("最大的数是: %d \n", max)
+	// for表达式 go中没有while和do while表达式
+	for i := 0; i < 5; i++ {
+		fmt.Println("for循环打印:%d \n", i)
+	}
+	for max >= 0 {
+		fmt.Printf("max小于0时结束循环,max：%d \n", max)
+		max--
+	}
+	// 遍历通道（channel)
+	c := make(chan int)
+	//启动一个goroutine,并且向channel推送数据
+	go func() {
+		c <- 1
+		c <- 2
+		c <- 3
+		close(c)
+	}()
+	for v := range c {
+		fmt.Printf("channel中的值为:%d \n", v)
+	}
+	//switch表达式 每个case后面不用写break
+	str := "Nike"
+	switch str {
+	// string类型多个值判断用逗号分隔
+	case "Adidas", "NewBlance":
+		fmt.Printf("I'am Adidas\n")
+		//添加了fallthrough会忽视隐式的break,代码会继续执行,不推荐这么写
+		fallthrough
+	case "Vans":
+		fmt.Printf("I'am Vans\n")
+	case "Nike":
+		fmt.Printf("Hello,I'am Nike!!\n")
+	default:
+		fmt.Printf("Sorry,I'dont found brand\n")
+	}
 }
-func main1() {
+func main() {
 	// 初始化变量的方式
 	var hp int32 = 100;
 	hp1 := 100;
@@ -162,43 +211,13 @@ func main1() {
 	 */
 	listExample()
 	//nil值 nil 是 map、slice、pointer、channel、func、interface的零值
-	// if
-	if _, error := strconv.Atoi("9207d12"); error != nil {
-		fmt.Println(error)
-	}
-	//遍历通道接收数据
-	c := make(chan int)
-	go func() {
-		c <- 1
-		c <- 2
-		c <- 3
-		close(c)
-	}()
-	for v := range c {
-		fmt.Println(v)
-	}
-	//switch
-	str1 := "hello"
-	switch {
-	case str1 == "hello":
-		fmt.Println(str1)
-		fallthrough
-	case str1 != "xiaoliwen":
-		fmt.Println("xiaoliwen")
-	}
-	// goto
-	tmp_count := 10
-	for {
-		tmp_count--
-		if tmp_count == 0 {
-			goto exit
-		}
-	}
-exit:
-	{
-		fmt.Println("退出循环")
-	}
-
+	// make和new的区别
+	/**
+	 * 1.make只能用来分配及初始化类型为slice、map、chan、的数据。new可以分配任意类型的数据。
+	 * 2.new 分配返回的是指针,即类型*Type。make返回引用,即Type
+	 * 3.new 分配的空间被清零。make分配空间后,会进行初始化
+	 */
+	processExample()
 	var chinese = "我是中国人， I am Chinese"
 	fmt.Println([]rune(chinese))
 }
