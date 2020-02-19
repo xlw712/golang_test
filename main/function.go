@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"runtime"
 	"strconv"
 	"strings"
 )
@@ -50,6 +51,55 @@ func main() {
 	car = bmw
 	car.run(120)
 	checkInterface(audi)
+	deferExample()
+	if e := exceptionExample(); e != nil {
+		fmt.Println(e.Error())
+	}
+	paincExample()
+}
+
+/**
+ * 宕机、恢复实例
+ */
+func paincExample() {
+	defer fmt.Println("我是在crash之前执行的代码")
+
+	defer func() {
+		//recover()返回的是一个interface{}类型,如果需要获取type需要,interface{}.(type)
+		error := recover()
+		switch error.(type) {
+		case runtime.Error:
+			fmt.Println("触发了一个运行时异常")
+		default:
+			fmt.Println("default")
+		}
+	}()
+	panic("crash")
+	defer fmt.Println("我是在crash之后执行的代码")
+}
+
+/**
+ * 自定义一个运行时异常,只需要实现error接口即可
+ */
+type exampleErrpor struct {
+}
+
+func (exampleErrpor) Error() string {
+	return "这是一个测试错误"
+}
+func exceptionExample() error {
+	return exampleErrpor{}
+}
+
+/**
+ * 延迟执行语句
+ * 每个defer语句会以栈结构的方式入栈,先defer的命令后执行,一般用作IO的处理
+ */
+func deferExample() {
+	fmt.Println("A")
+	defer fmt.Println("B")
+	fmt.Println("C")
+	defer fmt.Println("D")
 }
 
 /**
@@ -127,7 +177,7 @@ func (Audi) run(km int) {
 func (Bmw) run(km int) {
 	fmt.Println("宝马能跑 " + strconv.Itoa(km) + "km")
 }
-func checkInterface(t interface{},i interface{}) {
+func checkInterface(t interface{}) {
 	var car Car = Audi{}
 	fmt.Printf("%T", car)
 	if _, ok := t.(Car); ok {
