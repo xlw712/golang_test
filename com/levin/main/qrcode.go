@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	qr "github.com/skip2/go-qrcode"
+	oqr "github.com/Han-Ya-Jun/qrcode2console"
 )
 
 func main() {
@@ -12,4 +13,6 @@ func main() {
 	if b1,error:=qr.Encode("http://www.baidu.com",qr.Medium,256); error ==nil{
 		fmt.Print(b1)
 	}
+	q:=oqr.NewQRCode2ConsoleWithUrl("http://www.baidu.com",false)
+	q.Output()
 }
